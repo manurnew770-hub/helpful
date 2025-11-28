@@ -1,0 +1,32 @@
+===================**Manual installation by downloading to /tmp/ and extracting to /opt/**===================
+
+STEP 1 — Install Java
+sudo apt update
+sudo apt install -y openjdk-11-jdk wget
+
+#check java 
+java -version
+
+STEP 2 — Create a simple tomcat user
+sudo useradd -m -d /opt/tomcat tomcat
+
+#give permissions to the folder 
+sudo chown -R tomcat:tomcat /opt/tomcat
+
+Step 3 — Download Tomcat 9
+cd /tmp
+wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.112/bin/apache-tomcat-9.0.112.tar.gz (or the link for verfsion from tomcat website)
+
+Step 4 — Extract Tomcat into /opt/tomcat
+sudo tar xzf apache-tomcat-9.0.89.tar.gz -C /opt/tomcat
+
+#Create a symlink for convenience:
+sudo ln -s /opt/tomcat/apache-tomcat-9.0.112 /opt/tomcat/latest (make sure the version is matching)
+sudo chown -R tomcat:tomcat /opt/tomcat
+
+STEP 5 — Start Tomcat manually (no systemd yet)
+sudo -u tomcat /opt/tomcat/bin/startup.sh
+
+#Check if it's running wihout systemmd
+curl -I http://localhost:8080
+
