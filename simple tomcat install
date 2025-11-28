@@ -30,3 +30,14 @@ sudo -u tomcat /opt/tomcat/bin/startup.sh
 #Check if it's running wihout systemmd
 curl -I http://localhost:8080
 
+sudo cp .war files to /opt/tomcat/apache-tomcat-9.0.112/webapps/ and restart tomcat by sudo /opt
+
+#Adding Manager roles: (**need help here**)
+
+sudo tee -a /opt/tomcat/latest/conf/tomcat-users.xml > /dev/null <<'EOF'
+<!-- DEV ONLY: manager user for localhost testing -->
+<role rolename="manager-gui"/>
+<role rolename="manager-script"/>
+<role rolename="admin-gui"/>
+<user username="devadmin" password="ChangeMe123!" roles="manager-gui,manager-script,admin-gui"/>
+EOF
