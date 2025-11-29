@@ -1,4 +1,4 @@
-===================**Manual installation by downloading to /tmp/ and extracting to /opt/**===================
+===================**Manual installation by downloading to /tmp/ (tmp temporary data when needed )and extracting to /opt/ (opt - optional software)**===================
 
 STEP 1 — Install Java
 sudo apt update
@@ -31,7 +31,7 @@ sudo -u tomcat /opt/tomcat/bin/startup.sh
 curl -I http://localhost:8080
 
 sudo cp .war files to /opt/tomcat/apache-tomcat-9.0.112/webapps/ and restart tomcat by sudo /opt
-
++++++++++++++
 #Adding Manager roles: (**need help here**)
 
 sudo tee -a /opt/tomcat/latest/conf/tomcat-users.xml > /dev/null <<'EOF'
@@ -41,3 +41,42 @@ sudo tee -a /opt/tomcat/latest/conf/tomcat-users.xml > /dev/null <<'EOF'
 <role rolename="admin-gui"/>
 <user username="devadmin" password="ChangeMe123!" roles="manager-gui,manager-script,admin-gui"/>
 EOF
+++++++++++++++++
+
+Step 6 — Create systemd service (etc - etcetra - configuration files) [instead of step 5]
+sudo Vi /etc/systemd/system/tomcat.service
+--------------------paste this------
+[Unit]
+Description=Apache Tomcat 9 Web Application Container
+After=network.target
+
+[Service]
+Type=forking
+
+User=tomcat
+Group=tomcat
+
+Environment="JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64"
+Environment="CATALINA_PID=/opt/tomcat/latest/temp/tomcat.pid"
+Environment="CATALINA_HOME=/opt/tomcat/latest"
+Environment="CATALINA_BASE=/opt/tomcat/latest"
+Environment="CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC"
+Environment="JAVA_OPTS=-Djava.awt.headless=true"
+
+ExecStart=/opt/tomcat/latest/bin/startup.sh
+ExecStop=/opt/tomcat/latest/bin/shutdown.sh
+
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+-------------- :wq
+
+Step 7 — Reload systemd and start Tomcat
+
+sudo systemctl daemon-reload
+sudo systemctl start tomcat
+sudo systemctl enable tomcat
+sudo systemctl status tomcat
+
+
